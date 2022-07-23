@@ -10,7 +10,7 @@ const MainLayout = () => {
         <div>
             <Header/>
             <div className={s.body}>
-                <SideBar pageName={pageName}/>
+                <SideBar/>
                 <TasksPageCreator pageName={pageName}/>
             </div>
         </div>

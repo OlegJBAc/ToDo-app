@@ -1,23 +1,35 @@
-import React, { FC } from "react"
-import { useDispatch } from "react-redux"
-import { createProject, deleteProject } from "../../redux/app-slice"
+import React, { FC, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { setContextMenuActive } from "../../redux/appCondition-slice"
+import { getAllProjectsName } from "../../redux/selectors"
 import CreateProject from "./createProject/createProject"
 import s from './sideBar.module.scss'
+import { v4 } from 'uuid'
+
 
 interface propsType {
-    pageName: string
 }
 
-const SideBar: FC<propsType> = ({pageName}) => {
+const SideBar: FC<propsType> = () => {
     const dispatch = useDispatch()
-
+    const [isProjectCreating, setIsProjectCreating] = useState<boolean>(false)
+    const startOrEndProjectCreating = (isStart: boolean) => () => {
+        dispatch(setContextMenuActive(isStart))
+        setIsProjectCreating(isStart)
+    }
+    const allProjectsName = useSelector(getAllProjectsName)
     return (
         <>
             <nav className={s.navBar}>
                 <ul>
-                    <li>{pageName}</li>
+                    {
+                        allProjectsName.map(projectName => {
+                            return <li key={v4()}>{projectName}</li>
+                        })
+                    }
                 </ul>
-                <CreateProject pageName={pageName}/>
+                <button onClick={startOrEndProjectCreating(true)}>Create a new project</button>
+                { isProjectCreating && <CreateProject startOrEndProjectCreating={startOrEndProjectCreating}/> }
             </nav>
         </>
     )

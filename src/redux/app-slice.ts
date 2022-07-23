@@ -4,47 +4,67 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 const appSlice = createSlice({
     name: 'app',
     initialState: {
-        projects: [] as projectType[]
+        mainStorage: {} as projectStorageType
     },
     reducers: {
-        createProject(state, action: PayloadAction<projectType>){
+        createProject(state, action: PayloadAction<{ projectName: string }>){
+            const projectName = action.payload.projectName
             let isExistAlready = false
-            state.projects.forEach(project => {
-                if(project.name === action.payload.name){
+            const storageKeys: string[] = Object.keys(state.mainStorage)
+
+            storageKeys.forEach(key => {
+                if(key === projectName){
                     isExistAlready = true
                 }
             })
             if(!isExistAlready){
-                state.projects.push({ name: action.payload.name })
-                localStorage.setItem(`${action.payload.name}`, JSON.stringify(action.payload))
+                // @ts-ignore
+                state.mainStorage[projectName] = [] as taskType[]
+                localStorage.setItem(`${projectName}`, JSON.stringify([]))
             }else{
                 console.log('Project with exactly the same name is exist')
             }
         },
-        deleteProject(state, action: PayloadAction<projectType>){
+        deleteProject(state, action: PayloadAction<{ projectName: string }>){
+            const projectName = action.payload.projectName
             let isExistAlready = false
-            state.projects.forEach(project => {
-                if(project.name === action.payload.name){
+            let storageKeys: string[] = Object.keys(state.mainStorage)
+            storageKeys.forEach(key => {
+                if(key === projectName){
                     isExistAlready = true
                 }
             })
             if(!isExistAlready){
                 console.log('Project with such name not found')  
             }else{
-                state.projects.splice(state.projects.indexOf(action.payload), 1)
-                localStorage.removeItem(`${action.payload.name}`)
+                // @ts-ignore
+                state.mainStorage[projectName]
+                // @ts-ignore
+                .splice(state.mainStorage[projectName].indexOf(action.payload), 1)
+                localStorage.removeItem(`${projectName}`)
             }
-        }
+        },
+        initializeProjectStorage(state, action: PayloadAction<projectStorageType>){
+            state.mainStorage = action.payload
+        },
     }
 })
 
 
-export const { createProject, deleteProject } = appSlice.actions
+export const { createProject, deleteProject, initializeProjectStorage } = appSlice.actions
 
 export default appSlice.reducer
 
+
 // types area.
 
-interface projectType {
-    name: string
+type projectStorageType = {
+    [key: string]: taskType[]
+}
+
+interface taskType {
+    body: string
+    description: string
+    id: string
+    priority: string
 }
