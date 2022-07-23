@@ -18,7 +18,6 @@ const appSlice = createSlice({
                 }
             })
             if(!isExistAlready){
-                // @ts-ignore
                 state.mainStorage[projectName] = [] as taskType[]
                 localStorage.setItem(`${projectName}`, JSON.stringify([]))
             }else{
@@ -37,10 +36,7 @@ const appSlice = createSlice({
             if(!isExistAlready){
                 console.log('Project with such name not found')  
             }else{
-                // @ts-ignore
-                state.mainStorage[projectName]
-                // @ts-ignore
-                .splice(state.mainStorage[projectName].indexOf(action.payload), 1)
+                delete state.mainStorage.projectName
                 localStorage.removeItem(`${projectName}`)
             }
         },
