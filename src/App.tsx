@@ -6,7 +6,7 @@ import MainLayout from './mainLayout/mainLayout';
 
 
 const App = () => {
-
+  
   return (
     <BrowserRouter>
       <div className={s.app}>

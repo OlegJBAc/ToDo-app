@@ -1,4 +1,7 @@
 import React, { FC } from "react"
+import { useDispatch } from "react-redux"
+import { createProject, deleteProject } from "../../redux/app-slice"
+import CreateProject from "./createProject/createProject"
 import s from './sideBar.module.scss'
 
 interface propsType {
@@ -6,12 +9,15 @@ interface propsType {
 }
 
 const SideBar: FC<propsType> = ({pageName}) => {
+    const dispatch = useDispatch()
+
     return (
         <>
             <nav className={s.navBar}>
                 <ul>
                     <li>{pageName}</li>
                 </ul>
+                <CreateProject pageName={pageName}/>
             </nav>
         </>
     )
